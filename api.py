@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 app = Flask(__name__)
 
 
-path = '/Users/zavier/Desktop/Data_Scientist_OC/Projet_7_Implémentez_un_modèle_de_scoring_Garni_Xavier/mlruns/models/LGBM_hyperopt/model.pkl'
+path = 'model.pkl'
 
 with open(path, 'rb') as f2:
     print("utilisation modele lgbm")
