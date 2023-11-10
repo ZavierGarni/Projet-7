@@ -68,6 +68,11 @@ def credit(id_client):
     return jsonify(dict_final)
 
 
+def main():
+
+    app.run()
+
 if __name__ == '__main__':
-	app.run()
+    main()
+
 					 
