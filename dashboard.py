@@ -11,11 +11,11 @@ from streamlit_shap import st_shap
 
 
 #Load Dataframe
-path_df = '/Users/zavier/Desktop/Data_Scientist_OC/Projet_7_Implémentez_un_modèle_de_scoring_Garni_Xavier/application_train_clean.csv'
-path_rawdf = '/Users/zavier/Desktop/Data_Scientist_OC/Projet_7_Implémentez_un_modèle_de_scoring_Garni_Xavier/application_train.csv'
+path_df = 'application_train_clean.csv'
+path_rawdf = 'application_train.csv'
 
 
-path = '/Users/zavier/Desktop/Data_Scientist_OC/Projet_7_Implémentez_un_modèle_de_scoring_Garni_Xavier/mlruns/models/LGBM_hyperopt/model.pkl'
+path = 'model.pkl'
 
 with open(path, 'rb') as f2:
     print("utilisation modele lgbm")
