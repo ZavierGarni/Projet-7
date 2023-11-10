@@ -21,14 +21,13 @@ jobs:
       with:
         terraform_version: 0.15.0
 
-    - name: Navigate to Terraform directory
-      run: cd terraform
-
-    - name: Terraform Init
-      run: terraform init
-
-    - name: Terraform Plan
-      run: terraform plan
+    - name: Terraform plan
+      run: |
+        pwd
+        cd terraform
+        ls
+        terraform init
+        terraform plan
 
   terraform-apply:
     runs-on: ubuntu-latest
