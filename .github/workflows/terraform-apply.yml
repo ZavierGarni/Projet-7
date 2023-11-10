@@ -21,6 +21,9 @@ jobs:
       with:
         terraform_version: 0.15.0
 
+    - name: Navigate to Terraform directory
+      run: cd terraform
+
     - name: Terraform Init
       run: terraform init
 
@@ -40,6 +43,9 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: 0.15.0
+
+    - name: Navigate to Terraform directory
+      run: cd terraform
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
