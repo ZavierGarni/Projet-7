@@ -10,9 +10,9 @@ De plus, les chargés de relation client ont fait remonter le fait que les clien
 
 ## Étapes du projet
 
-Pré-traitement nécessaire des données
-Méthodologie d'entraînement du modèle
-Score métier, optimisation et métrique d'évaluation
-Interprétations globale et locale de l’importance des variables
-Analyse de la dérive des données
-Limites et améliorations possibles
+1. Pré-traitement nécessaire des données
+2. Méthodologie d'entraînement du modèle
+3. Score métier, optimisation et métrique d'évaluation
+4. Interprétations globale et locale de l’importance des variables
+5. Analyse de la dérive des données
+6. Limites et améliorations possibles
