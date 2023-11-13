@@ -43,20 +43,24 @@ def calcul_valeurs_shap(df):
 
 
 
+@st.cache_data
+def calcul_proba(path_df, path_rawdf):
+    dataframe = chargement_data(path_df)
+    raw_dataframe = chargement_data(path_rawdf)
+    liste_id = dataframe['SK_ID_CURR'].tolist()
 
 
-dataframe = chargement_data(path_df)
-raw_dataframe = chargement_data(path_rawdf)
-liste_id = dataframe['SK_ID_CURR'].tolist()
+    y_pred_lgbm = model.predict(dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1))    # Prédiction de la classe 0 ou 1
+    y_pred_lgbm_proba = model.predict_proba(dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1)) # Prédiction du % de risque
 
-
-y_pred_lgbm = model.predict(dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1))    # Prédiction de la classe 0 ou 1
-y_pred_lgbm_proba = model.predict_proba(dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1)) # Prédiction du % de risque
-
-# Récupération du score du client
-y_pred_lgbm_proba_df = pd.DataFrame(y_pred_lgbm_proba, columns=['proba_classe_0', 'proba_classe_1'])
-y_pred_lgbm_proba_df = pd.concat([y_pred_lgbm_proba_df['proba_classe_1'],
+    # Récupération du score du client
+    y_pred_lgbm_proba_df = pd.DataFrame(y_pred_lgbm_proba, columns=['proba_classe_0', 'proba_classe_1'])
+    y_pred_lgbm_proba_df = pd.concat([y_pred_lgbm_proba_df['proba_classe_1'],
                                 dataframe['SK_ID_CURR']], axis=1)
+    return dataframe, raw_dataframe, liste_id, y_pred_lgbm, y_pred_lgbm_proba, y_pred_lgbm_proba_df
+
+
+dataframe, raw_dataframe, liste_id, y_pred_lgbm, y_pred_lgbm_proba, y_pred_lgbm_proba_df = calcul_proba(path_df, path_rawdf)
 
 
 
@@ -135,10 +139,17 @@ elif (int(id_input) in liste_id): #quand un identifiant correct a été saisi on
     
     fig = go.Figure(go.Indicator(
                     domain = {'x': [0, 1], 'y': [0, 1]},
-                    value = float(prediction),
+                    value = float(prediction*100),
                     mode = "gauge+number",
                     title = {'text': "Score du client", 'font': {'size': 24}},
-                    gauge = {'axis': {'visible': False}}))
+                    gauge = {'axis': {'range': [None, 1]},
+                 'bar': {'color': "grey"},
+                 'steps' : [
+                     {'range': [0, 0.48], 'color': "lightblue"},
+                     {'range': [0.48, 1], 'color': "lightcoral"}],
+                 'threshold' :
+                     {'line': {'color': "red", 'width': 4}, 
+                      'thickness': 1, 'value': 0.48 }}))
 
     fig.update_layout(paper_bgcolor='white',
                     height=400, width=500,
@@ -311,9 +322,43 @@ elif (int(id_input) in liste_id): #quand un identifiant correct a été saisi on
 
 
 
+    ###########################################################################
+    # Affichage du sélecteur de variables et des graphs de dépendance #########
 
-
-
+    st.markdown("""---""")
+    
+    check5 = st.checkbox('Afficher le sélecteur de caractéristiques')
+    if check5 :
+        
+        liste_variables = dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1).columns.to_list()
+       
+        ID_var = st.selectbox("*Veuillez sélectionner une variable à l'aide du menu déroulant 👇*", (liste_variables))
+        st.write("Vous avez sélectionné la variable :", ID_var)
+    
+        fig = plt.figure(figsize=(12, 4))
+        ax1 = fig.add_subplot(121)
+        shap.dependence_plot(ID_var, 
+                            calcul_valeurs_shap(dataframe)[1], 
+                            dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1), 
+                            interaction_index=None,
+                            alpha = 0.5,
+                            x_jitter = 0.5,
+                            title= "Graphique de Dépendance",
+                            ax=ax1,
+                            show = False)
+        ax2 = fig.add_subplot(122)
+        shap.dependence_plot(ID_var, 
+                            calcul_valeurs_shap(dataframe)[1], 
+                            dataframe.drop(labels=["SK_ID_CURR","TARGET"], axis=1), 
+                            interaction_index='auto',
+                            alpha = 0.5,
+                            x_jitter = 0.5,
+                            title= "Graphique de Dépendance et Intéraction",
+                            ax=ax2,
+                            show = False)
+        fig.tight_layout()
+        st.pyplot(fig)
+    
 
 
 

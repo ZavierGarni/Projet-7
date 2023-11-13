@@ -31,7 +31,7 @@ def predict_id(ID, dataframe):
     #print(proba)
     #print(proba[0])
     #print(proba[0][0])
-    if proba[0][0] > 0.94:
+    if proba[0][0] > 0.48:
         return 0, proba
     else:
         return 1, proba
